@@ -321,4 +321,157 @@ input, textarea, select {
   }
 }
 
+/* Neumorphic Soft UI Auth Design System */
+.neu-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e6ebf1;
+  padding: 1.5rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.neu-circle-card {
+  width: 100%;
+  max-width: 630px;
+  aspect-ratio: 1 / 1;
+  background: #e6ebf1;
+  border-radius: 50%;
+  box-shadow: 24px 24px 60px #c3c9d2, -24px -24px 60px #ffffff, inset 2px 2px 5px rgba(255,255,255,0.7);
+  padding: 3.5rem 4.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 640px) {
+  .neu-circle-card {
+    aspect-ratio: auto;
+    border-radius: 40px;
+    padding: 2.5rem 1.5rem;
+  }
+}
+
+.neu-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #2d3748;
+  margin-bottom: 0.15rem;
+  text-align: center;
+  letter-spacing: -0.03em;
+}
+
+.neu-subtitle {
+  font-size: 0.85rem;
+  color: #718096;
+  margin-bottom: 1.1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.neu-input-group {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.95rem;
+}
+
+.neu-input {
+  width: 100%;
+  padding: 0.775rem 1.1rem 0.775rem 2.75rem;
+  background: #e6ebf1;
+  border: 2.5px solid transparent;
+  border-radius: 30px;
+  box-shadow: inset 4px 4px 8px #c3c9d2, inset -4px -4px 8px #ffffff;
+  color: #2d3748;
+  font-size: 0.9rem;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+.neu-input::placeholder {
+  color: #a0aec0;
+  font-weight: 400;
+}
+
+/* Red Highlight on Focus / Active state requested by user */
+.neu-input:focus {
+  border-color: #ef4444 !important;
+  box-shadow: inset 2px 2px 4px #c3c9d2, inset -2px -2px 4px #ffffff, 0 0 14px rgba(239, 68, 68, 0.4) !important;
+  background: #eef2f7;
+}
+
+.neu-input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #718096;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.neu-input-wrapper:focus-within .neu-input-icon {
+  color: #ef4444;
+}
+
+.neu-btn {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  margin-top: 0.5rem;
+  background: #e6ebf1;
+  border: none;
+  border-radius: 30px;
+  box-shadow: 5px 5px 12px #c3c9d2, -5px -5px 12px #ffffff;
+  color: #4a5568;
+  font-weight: 800;
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.neu-btn:hover {
+  box-shadow: 8px 8px 18px #bcc2cb, -8px -8px 18px #ffffff;
+  color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.neu-btn:active {
+  box-shadow: inset 4px 4px 8px #c3c9d2, inset -4px -4px 8px #ffffff;
+  transform: translateY(0);
+}
+
+.neu-link-text {
+  text-align: center;
+  margin-top: 1.75rem;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.neu-link-highlight {
+  color: #dc2626;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.neu-link-highlight:hover {
+  color: #b91c1c;
+  text-decoration: underline;
+}
+
+
+
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Sparkles, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import { GraduationCap, Mail, Lock, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 const Login = () => {
@@ -12,6 +12,7 @@ const Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +26,7 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (err) {
       if (err.status === 400 || err.message?.includes('Invalid login credentials')) {
-        setError('Invalid email or password. Please check your credentials or register a new account.');
+        setError('Invalid email or password. Please check your credentials.');
       } else if (err.status === 429 || err.message?.includes('429')) {
         setError('Too many requests. Please wait a minute and try again.');
       } else {
@@ -37,84 +38,140 @@ const Login = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)', padding: '1.5rem' }}>
-      <div className="sv-card animate-fade-in" style={{ width: '100%', maxWidth: '420px', padding: '2.5rem 2rem' }}>
-        {/* Brand */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.75rem' }}>
-            <div
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '0.75rem',
-                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#ffffff',
-              }}
-            >
-              <Sparkles size={22} />
-            </div>
-            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)' }}>SkillVerse</span>
-          </Link>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-main)' }}>Welcome back</h2>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Sign in to continue your AI learning journey</p>
-        </div>
+    <div className="neu-container">
+      <div className="neu-circle-card animate-fade-in">
+        
+        {/* Brand Logo & Name (Exact Landing Page Logo) */}
+        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', marginBottom: '0.75rem' }}>
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              background: 'linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#ffffff',
+              boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+              flexShrink: 0,
+            }}
+          >
+            <GraduationCap size={20} color="#FFFFFF" />
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            <span style={{ fontSize: '1.2rem', fontWeight: 900, color: '#0F172A', letterSpacing: '-0.02em', lineHeight: 1, display: 'block' }}>
+              SkillVerse <span style={{ color: '#2563EB' }}>AI</span>
+            </span>
+            <span style={{ display: 'block', fontSize: '0.55rem', fontWeight: 800, color: '#4F46E5', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '1px' }}>
+              Powered Learning
+            </span>
+          </div>
+        </Link>
 
+
+
+
+        {/* Title & Subtitle */}
+        <h1 className="neu-title">Sign In</h1>
+        <p className="neu-subtitle">Welcome back! Access your account</p>
+
+
+        {/* Error Callout */}
         {error && (
-          <div style={{ background: 'var(--danger-light)', color: 'var(--danger)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
-            <AlertCircle size={18} />
+          <div 
+            style={{ 
+              width: '100%', 
+              background: '#fff5f5', 
+              border: '1.5px solid #fecaca', 
+              color: '#dc2626', 
+              padding: '0.75rem 1rem', 
+              borderRadius: '20px', 
+              fontSize: '0.8125rem', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem', 
+              marginBottom: '1.25rem' 
+            }}
+          >
+            <AlertCircle size={16} style={{ flexShrink: 0 }} />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="sv-input-group">
-            <label className="sv-label">Email Address</label>
-            <div style={{ position: 'relative' }}>
-              <Mail size={18} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
-              <input
-                type="email"
-                required
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="sv-input"
-                style={{ paddingLeft: '2.5rem' }}
-              />
-            </div>
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          
+          {/* Email Input */}
+          <div className="neu-input-group neu-input-wrapper">
+            <Mail size={18} className="neu-input-icon" />
+            <input
+              type="email"
+              required
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="neu-input"
+            />
           </div>
 
-          <div className="sv-input-group">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label className="sv-label">Password</label>
-              <Link to="/forgot-password" style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 600 }}>Forgot password?</Link>
-            </div>
-            <div style={{ position: 'relative' }}>
-              <Lock size={18} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
-              <input
-                type="password"
-                required
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="sv-input"
-                style={{ paddingLeft: '2.5rem' }}
-              />
-            </div>
+          {/* Password Input */}
+          <div className="neu-input-group neu-input-wrapper">
+            <Lock size={18} className="neu-input-icon" />
+            <input
+              type={showPassword ? 'text' : 'password'}
+              required
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="neu-input"
+              style={{ paddingRight: '2.85rem' }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute',
+                right: '1.1rem',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                color: '#718096',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0.2rem'
+              }}
+              title={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
-          <button type="submit" disabled={loading} className="sv-btn sv-btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '0.75rem' }}>
-            <span>{loading ? 'Signing in...' : 'Sign In'}</span>
+          {/* Forgot Password Link */}
+          <div style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '1.25rem' }}>
+            <Link to="/forgot-password" style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 600, textDecoration: 'none' }}>
+              Forgot password?
+            </Link>
+          </div>
+
+          {/* Submit Button */}
+          <button type="submit" disabled={loading} className="neu-btn">
+            <span>{loading ? 'LOGGING IN...' : 'LOG IN'}</span>
             {!loading && <ArrowRight size={18} />}
           </button>
+
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '1.75rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+        {/* Link to Signup */}
+        <div className="neu-link-text">
           Don't have an account?{' '}
-          <Link to="/signup" style={{ color: 'var(--primary)', fontWeight: 600 }}>Create one for free</Link>
+          <Link to="/signup" className="neu-link-highlight">
+            Sign Up
+          </Link>
         </div>
+
       </div>
     </div>
   );

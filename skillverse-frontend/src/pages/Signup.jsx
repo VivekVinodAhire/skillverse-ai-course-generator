@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
+import { GraduationCap, Mail, Lock, User, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 const Signup = () => {
@@ -11,6 +11,8 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -19,14 +21,16 @@ const Signup = () => {
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError('Passwords do not match. Please re-enter your password.');
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+      setError('Password must be at least 6 characters long.');
       return;
     }
+
+    setLoading(true);
 
     try {
       const data = await signup(email, password, fullName);
@@ -38,7 +42,7 @@ const Signup = () => {
       }
     } catch (err) {
       if (err.status === 429 || err.message?.includes('429') || err.message?.toLowerCase().includes('rate limit')) {
-        setError('Supabase Auth Rate Limit reached. Please wait 2-3 minutes or turn OFF "Confirm email" in Supabase Dashboard -> Auth Settings for instant signups.');
+        setError('Supabase Auth Rate Limit reached. Please wait 2-3 minutes or turn OFF email confirmation.');
       } else {
         setError(err.message || 'Failed to create account. Please try again.');
       }
@@ -48,115 +52,185 @@ const Signup = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)', padding: '1.5rem' }}>
-      <div className="sv-card animate-fade-in" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem 2rem' }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.75rem' }}>
-            <div
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '0.75rem',
-                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#ffffff',
-              }}
-            >
-              <Sparkles size={22} />
-            </div>
-            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)' }}>SkillVerse</span>
-          </Link>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-main)' }}>Create your account</h2>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Start generating personalized AI courses today</p>
-        </div>
+    <div className="neu-container">
+      <div className="neu-circle-card animate-fade-in">
+        
+        {/* Brand Logo & Name (Exact Landing Page Logo) */}
+        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', marginBottom: '0.75rem' }}>
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              background: 'linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#ffffff',
+              boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+              flexShrink: 0,
+            }}
+          >
+            <GraduationCap size={20} color="#FFFFFF" />
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            <span style={{ fontSize: '1.2rem', fontWeight: 900, color: '#0F172A', letterSpacing: '-0.02em', lineHeight: 1, display: 'block' }}>
+              SkillVerse <span style={{ color: '#2563EB' }}>AI</span>
+            </span>
+            <span style={{ display: 'block', fontSize: '0.55rem', fontWeight: 800, color: '#4F46E5', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '1px' }}>
+              Powered Learning
+            </span>
+          </div>
+        </Link>
 
+
+
+
+        {/* Title & Subtitle */}
+        <h1 className="neu-title">Sign Up</h1>
+        <p className="neu-subtitle">Create your account</p>
+
+
+        {/* Error Callout */}
         {error && (
-          <div style={{ background: 'var(--danger-light)', color: 'var(--danger)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
-            <AlertCircle size={18} />
+          <div 
+            style={{ 
+              width: '100%', 
+              background: '#fff5f5', 
+              border: '1.5px solid #fecaca', 
+              color: '#dc2626', 
+              padding: '0.75rem 1rem', 
+              borderRadius: '20px', 
+              fontSize: '0.8125rem', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem', 
+              marginBottom: '1.25rem' 
+            }}
+          >
+            <AlertCircle size={16} style={{ flexShrink: 0 }} />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="sv-input-group">
-            <label className="sv-label">Full Name</label>
-            <div style={{ position: 'relative' }}>
-              <User size={18} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
-              <input
-                type="text"
-                required
-                placeholder="John Doe"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="sv-input"
-                style={{ paddingLeft: '2.5rem' }}
-              />
-            </div>
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          
+          {/* Full Name */}
+          <div className="neu-input-group neu-input-wrapper">
+            <User size={18} className="neu-input-icon" />
+            <input
+              type="text"
+              required
+              placeholder="Full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="neu-input"
+            />
           </div>
 
-          <div className="sv-input-group">
-            <label className="sv-label">Email Address</label>
-            <div style={{ position: 'relative' }}>
-              <Mail size={18} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
-              <input
-                type="email"
-                required
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="sv-input"
-                style={{ paddingLeft: '2.5rem' }}
-              />
-            </div>
+          {/* Email */}
+          <div className="neu-input-group neu-input-wrapper">
+            <Mail size={18} className="neu-input-icon" />
+            <input
+              type="email"
+              required
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="neu-input"
+            />
           </div>
 
-          <div className="sv-input-group">
-            <label className="sv-label">Password</label>
-            <div style={{ position: 'relative' }}>
-              <Lock size={18} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
-              <input
-                type="password"
-                required
-                placeholder="At least 6 characters"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="sv-input"
-                style={{ paddingLeft: '2.5rem' }}
-              />
-            </div>
+          {/* Password */}
+          <div className="neu-input-group neu-input-wrapper">
+            <Lock size={18} className="neu-input-icon" />
+            <input
+              type={showPassword ? 'text' : 'password'}
+              required
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="neu-input"
+              style={{ paddingRight: '2.85rem' }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute',
+                right: '1.1rem',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                color: '#718096',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0.2rem'
+              }}
+              title={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
-          <div className="sv-input-group">
-            <label className="sv-label">Confirm Password</label>
-            <div style={{ position: 'relative' }}>
-              <Lock size={18} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
-              <input
-                type="password"
-                required
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="sv-input"
-                style={{ paddingLeft: '2.5rem' }}
-              />
-            </div>
+          {/* Confirm Password */}
+          <div className="neu-input-group neu-input-wrapper">
+            <Lock size={18} className="neu-input-icon" />
+            <input
+              type={showConfirmPassword ? 'text' : 'password'}
+              required
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="neu-input"
+              style={{ paddingRight: '2.85rem' }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              style={{
+                position: 'absolute',
+                right: '1.1rem',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                color: '#718096',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0.2rem'
+              }}
+              title={showConfirmPassword ? 'Hide password' : 'Show password'}
+            >
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
-          <button type="submit" disabled={loading} className="sv-btn sv-btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '0.75rem' }}>
-            <span>{loading ? 'Creating Account...' : 'Get Started Free'}</span>
+          {/* Submit Button */}
+          <button type="submit" disabled={loading} className="neu-btn">
+            <span>{loading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}</span>
             {!loading && <ArrowRight size={18} />}
           </button>
+
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '1.75rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+        {/* Link to Login */}
+        <div className="neu-link-text">
           Already have an account?{' '}
-          <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 600 }}>Sign in</Link>
+          <Link to="/login" className="neu-link-highlight">
+            Login
+          </Link>
         </div>
+
       </div>
     </div>
   );
 };
 
 export default Signup;
+
+
