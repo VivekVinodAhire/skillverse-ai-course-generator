@@ -1,0 +1,8 @@
+# Supabase Project Configuration
+project_id = "hbtqxiyjemfjmabstquk"
+
+[functions.generate-course]
+verify_jwt = false
+
+[functions.ai-tutor]
+verify_jwt = false
