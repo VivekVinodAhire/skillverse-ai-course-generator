@@ -355,32 +355,109 @@ const CreateCourse = () => {
             ))}
           </div>
 
-          {/* Error & Resume Action */}
+          {/* Error & Quota Limit Banner / Modal */}
           {generationError && (
-            <div style={{ background: 'var(--warning-light)', border: '1px solid var(--warning)', borderRadius: 'var(--radius-md)', padding: '1.25rem', marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--warning)', fontWeight: 700, marginBottom: '0.375rem' }}>
-                <AlertTriangle size={18} />
-                <span>Generation was interrupted</span>
-              </div>
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-main)', marginBottom: '1rem' }}>
-                Your completed modules and lessons have been saved. You will not lose your progress.
-              </p>
-              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                <button
-                  onClick={() => activeCourseId && resumeExistingGeneration(activeCourseId)}
-                  className="sv-btn sv-btn-primary"
+            <>
+              {/* Modal Overlay */}
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'rgba(15, 23, 42, 0.75)',
+                  backdropFilter: 'blur(4px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 9999,
+                  padding: '1.5rem',
+                }}
+              >
+                <div
+                  className="animate-fade-in"
+                  style={{
+                    background: '#FFFFFF',
+                    borderRadius: '24px',
+                    maxWidth: '520px',
+                    width: '100%',
+                    padding: '2.25rem 2rem',
+                    textAlign: 'center',
+                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                    border: '1px solid rgba(226, 232, 240, 0.8)',
+                  }}
                 >
-                  <RefreshCw size={16} />
-                  <span>Resume Generation</span>
-                </button>
-                <button
-                  onClick={() => navigate(activeCourseId ? `/courses/${activeCourseId}` : '/my-courses')}
-                  className="sv-btn sv-btn-secondary"
-                >
-                  <span>Back to Course</span>
-                </button>
+                  <div
+                    style={{
+                      width: '64px',
+                      height: '64px',
+                      borderRadius: '20px',
+                      background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
+                      color: '#D97706',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 1.25rem auto',
+                      boxShadow: '0 10px 15px -3px rgba(217, 119, 6, 0.2)',
+                    }}
+                  >
+                    <Sparkles size={32} />
+                  </div>
+
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.75rem' }}>
+                    We're working on your course!
+                  </h3>
+
+                  <p style={{ fontSize: '0.925rem', color: '#475569', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+                    AI rate limits were temporarily reached, but <strong>we have built a smart solution for you!</strong> Your course roadmap and all completed modules are safely saved in your dashboard.
+                  </p>
+
+                  <div
+                    style={{
+                      background: '#F8FAFC',
+                      border: '1px solid #E2E8F0',
+                      borderRadius: '14px',
+                      padding: '1rem',
+                      fontSize: '0.85rem',
+                      color: '#334155',
+                      textAlign: 'left',
+                      marginBottom: '1.75rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.5rem',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, color: '#2563EB' }}>
+                      <CheckCircle2 size={16} />
+                      <span>What happens next?</span>
+                    </div>
+                    <div>1. You can log out or switch pages anytime—your progress is saved.</div>
+                    <div>2. Return in a few minutes and click <strong>Resume Generation</strong> on your Dashboard.</div>
+                    <div>3. SkillVerse will finish generating your modules and display your complete course!</div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <button
+                      onClick={() => activeCourseId && resumeExistingGeneration(activeCourseId)}
+                      className="sv-btn sv-btn-primary"
+                      style={{ padding: '0.875rem', fontSize: '0.95rem', fontWeight: 700, borderRadius: '12px' }}
+                    >
+                      <RefreshCw size={18} />
+                      <span>Try Resuming Now</span>
+                    </button>
+
+                    <button
+                      onClick={() => navigate('/dashboard')}
+                      className="sv-btn sv-btn-secondary"
+                      style={{ padding: '0.75rem', fontSize: '0.9rem', borderRadius: '12px' }}
+                    >
+                      <span>Go to Dashboard</span>
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       )}

@@ -365,10 +365,16 @@ Return a JSON object with this exact structure:
       } catch (_) {}
     }
 
+    const isQuotaError = errorMsg.includes('429') || errorMsg.includes('QUOTA') || errorMsg.includes('RESOURCE_EXHAUSTED');
+    const userFriendlyMessage = isQuotaError
+      ? "We are currently working on your course! High demand reached AI quota limits, but your progress is safely saved. Please return in a few minutes to resume generation."
+      : "Generation step paused due to temporary network issues. Your course progress is safely saved on your dashboard and can be resumed anytime.";
+
     return new Response(
       JSON.stringify({
-        error: 'Generation step paused due to temporary network issues. You can resume generation anytime.',
+        error: userFriendlyMessage,
         details: errorMsg,
+        isQuotaExceeded: isQuotaError,
       }),
       {
         status: 500,

@@ -82,12 +82,12 @@ export async function callGeminiWithFailover(options: GeminiRequestOptions): Pro
             body: JSON.stringify(payload),
           });
 
-          // Handle 404 (Model unavailable): Immediately break to try next key or fallback model
+          // Handle 404 (Model unavailable): Move to next key / fallback model
           if (response.status === 404) {
             const errText = await response.text();
             console.warn(`[Gemini 404 Warning] Model "${model}" unavailable on Key #${keyIndex + 1}: ${errText}`);
             lastError = new Error(`Gemini model "${model}" unavailable (404): ${errText}`);
-            break; // Move to next key / fallback model without repeating retries for 404
+            break;
           }
 
           // Handle 400 (Bad request): Non-retryable request error
@@ -98,19 +98,27 @@ export async function callGeminiWithFailover(options: GeminiRequestOptions): Pro
             break;
           }
 
-          // Handle 429 / 5xx temporary server errors: Retry with backoff
-          if (response.status === 429 || response.status >= 500) {
+          // Handle 429 Rate Limit: Immediately failover to Key #2 if available without wasting retries
+          if (response.status === 429) {
+            const errText = await response.text();
+            console.warn(`[Gemini Rate Limit 429] Key #${keyIndex + 1} quota limit reached for model "${model}". Failing over to next API key...`);
+            lastError = new Error(`ALL_GEMINI_KEYS_QUOTA_EXCEEDED: Key #${keyIndex + 1} quota exceeded. ${errText}`);
+            break; // Immediately break retry loop to try Key #2 / fallback model
+          }
+
+          // Handle 5xx temporary server errors (503 High Demand, etc.): Retry with exponential backoff
+          if (response.status >= 500) {
             const errText = await response.text();
             console.warn(`[Gemini Temporary Error] Key #${keyIndex + 1}, Model "${model}", Attempt ${attempt + 1} HTTP ${response.status}: ${errText}`);
             lastError = new Error(`HTTP ${response.status}: ${errText}`);
-            continue; // Retry next attempt
+            continue;
           }
 
           if (!response.ok) {
             const errText = await response.text();
             console.error(`[Gemini Error] Key #${keyIndex + 1}, Model "${model}" HTTP ${response.status}: ${errText}`);
             lastError = new Error(`Gemini API error ${response.status}: ${errText}`);
-            break; // Try next key/model
+            break;
           }
 
           const data: any = await response.json();
@@ -127,6 +135,14 @@ export async function callGeminiWithFailover(options: GeminiRequestOptions): Pro
             cleanJson = cleanJson.replace(/^```\s*/, '').replace(/\s*```$/, '');
           }
 
+          // Sanitize unescaped control characters inside JSON strings (solves Bad control character syntax errors)
+          cleanJson = cleanJson.replace(/[\u0000-\u001F]+/g, (match) => {
+            if (match === '\n') return '\\n';
+            if (match === '\r') return '\\r';
+            if (match === '\t') return '\\t';
+            return '';
+          });
+
           const parsed = JSON.parse(cleanJson);
           return parsed;
         } catch (err: unknown) {
@@ -138,5 +154,5 @@ export async function callGeminiWithFailover(options: GeminiRequestOptions): Pro
     }
   }
 
-  throw lastError || new Error('All Gemini API keys and models (gemini-3.6-flash, gemini-3.5-flash) failed.');
+  throw lastError || new Error('All Gemini API keys and models failed.');
 }
